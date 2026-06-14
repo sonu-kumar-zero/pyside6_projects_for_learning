@@ -1,0 +1,5 @@
+Toolbar [done]
+Mouse wheel zoom (Ctrl + Wheel) [done]
+Reset zoom (100%) [done]
+Status bar (1920 × 1080 | 125%) [done]
+Drag & drop images [done]
