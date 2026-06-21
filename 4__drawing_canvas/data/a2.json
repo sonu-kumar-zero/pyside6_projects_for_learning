@@ -1,0 +1,49 @@
+{
+    "items": [
+        {
+            "type": "ellipse",
+            "x": -261.0,
+            "y": 2.0,
+            "width": 163.0,
+            "height": 175.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "ellipse",
+            "x": -266.0,
+            "y": -258.0,
+            "width": 114.0,
+            "height": 123.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "ellipse",
+            "x": 19.0,
+            "y": -264.0,
+            "width": 122.0,
+            "height": 136.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "ellipse",
+            "x": 5.0,
+            "y": 2.0,
+            "width": 132.0,
+            "height": 183.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "rectangle",
+            "x": -202.0,
+            "y": -210.0,
+            "width": 267.0,
+            "height": 284.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        }
+    ]
+}

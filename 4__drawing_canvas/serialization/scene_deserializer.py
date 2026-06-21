@@ -6,6 +6,7 @@ import json
 from typing import Any
 
 from items.item_factory import ItemFactory
+from models.shape import ShapeData
 
 class SceneDeserializer:
     @staticmethod
@@ -18,6 +19,7 @@ class SceneDeserializer:
         
         scene.clear()
         
-        for item_data in data.get("items", []):
+        for raw_item_data  in data.get("items", []):
+            item_data = ShapeData(**raw_item_data)
             item = ItemFactory.create_item(item_data)
             scene.addItem(item)

@@ -3,6 +3,7 @@ from PySide6.QtCore import QRectF
 
 from items.graphics_item_type import GraphicsItemType
 from items.base_item import BaseItem
+from models.shape import ShapeData
 
 class RectangleItem(QGraphicsRectItem, BaseItem):
     ITEM_TYPE = GraphicsItemType.RECTANGLE
@@ -16,25 +17,25 @@ class RectangleItem(QGraphicsRectItem, BaseItem):
         
     def to_dict(self) -> dict[str, float | str]:
         rect = self.rect()
-        return {
-            "type": "rectangle",
-            "x": rect.x(),
-            "y": rect.y(),
-            "width": rect.width(),
-            "height": rect.height(),
-            "pos_x": self.pos().x(),
-            "pos_y": self.pos().y(),
-        }
+        return ShapeData(
+            type=self.ITEM_TYPE.value,
+            x=rect.x(),
+            y=rect.y(),
+            width=rect.width(),
+            height=rect.height(),
+            pos_x=self.pos().x(),
+            pos_y=self.pos().y()
+        ).to_dict()
     
     @classmethod
-    def from_dict(cls, data: dict[str, float | str]) -> 'RectangleItem':
+    def from_dict(cls, data: ShapeData) -> 'RectangleItem':
         item = cls(
             QRectF(
-                float(data["x"]),
-                float(data["y"]),
-                float(data["width"]),
-                float(data["height"])
+                data.x,
+                data.y,
+                data.width,
+                data.height
             )
         )
-        item.setPos(float(data["pos_x"]), float(data["pos_y"]))
+        item.setPos(data.pos_x, data.pos_y)
         return item

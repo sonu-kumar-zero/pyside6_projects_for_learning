@@ -1,4 +1,5 @@
 from items.graphics_item_type import GraphicsItemType
+from models.shape import ShapeData
 
 class BaseItem:
     ITEM_TYPE: GraphicsItemType
@@ -10,5 +11,5 @@ class BaseItem:
         raise NotImplementedError("Subclasses must implement to_dict method")
     
     @classmethod
-    def from_dict(cls, data: dict[str, float | str]) -> 'BaseItem':
+    def from_dict(cls, data: ShapeData) -> 'BaseItem':
         raise NotImplementedError("Subclasses must implement from_dict method")

@@ -5,6 +5,7 @@ from items.graphics_item_type import GraphicsItemType
 from items.rectangle_item import RectangleItem
 from items.ellipse_item import EllipseItem
 from items.base_item import BaseItem
+from models.shape import ShapeData
 
 ITEM_REGISTRY: dict[GraphicsItemType, Type[BaseItem]] = {
     GraphicsItemType.RECTANGLE: RectangleItem,
@@ -13,9 +14,8 @@ ITEM_REGISTRY: dict[GraphicsItemType, Type[BaseItem]] = {
 
 class ItemFactory:
     @staticmethod
-    def create_item(data: dict[str, float | str]) -> QGraphicsItem:
-        item_type = GraphicsItemType(data["type"])
-
+    def create_item(data: ShapeData) -> QGraphicsItem:
+        item_type = GraphicsItemType(data.type)
 
         item_class = ITEM_REGISTRY[item_type]
 
