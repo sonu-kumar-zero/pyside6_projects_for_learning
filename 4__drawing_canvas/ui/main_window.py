@@ -22,6 +22,12 @@ from serialization.scene_deserializer import SceneDeserializer
 
 from pathlib import Path
 
+from clipboard.clipboard_manager import ClipboardManager
+from items.base_item import BaseItem
+from models.shape import ShapeData
+from items.item_factory import ItemFactory
+from commands.add_item_command import AddItemCommand
+
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
@@ -36,6 +42,8 @@ class MainWindow(QMainWindow):
         self.select_tool = SelectTool()
         self.rectangle_tool = RectangleTool()
         self.ellipse_tool = EllipseTool()
+        
+        self.clipboard_manager = ClipboardManager()
 
         self._create_toolbar()
 
@@ -93,6 +101,13 @@ class MainWindow(QMainWindow):
         open_action.triggered.connect(lambda: self.open_scene())
         open_action.setShortcut(QKeySequence.StandardKey.Open)
 
+        copy_action = QAction("Copy", self)
+        copy_action.triggered.connect(lambda: self.copy_selected_items())
+        copy_action.setShortcut(QKeySequence.StandardKey.Copy)
+        
+        paste_action = QAction("Paste", self)
+        paste_action.triggered.connect(lambda: self.paste_items())
+        paste_action.setShortcut(QKeySequence.StandardKey.Paste)
 
         toolbar.addAction(select_action)
         toolbar.addSeparator()
@@ -113,6 +128,10 @@ class MainWindow(QMainWindow):
         toolbar.addAction(save_action)
         toolbar.addAction(open_action)
         toolbar.addSeparator()
+        toolbar.addAction(copy_action)
+        toolbar.addAction(paste_action)
+        toolbar.addSeparator()
+        
         
     def delete_selected_items(self) -> None:
         items: list[QGraphicsItem] = self.scene.selectedItems()
@@ -148,3 +167,25 @@ class MainWindow(QMainWindow):
         file_path = Path(file_path)
         
         SceneDeserializer.load(self.scene, file_path)
+        
+    def copy_selected_items(self) -> None:
+        self.clipboard_manager.data.clear()
+        
+        for item in self.scene.selectedItems():
+            if not isinstance(item, BaseItem):
+                continue
+
+            shape_data = ShapeData.from_dict(item.to_dict())
+                        
+            self.clipboard_manager.data.append(shape_data)
+            
+    def paste_items(self) -> None:
+        self.scene.clearSelection()
+        for data in self.clipboard_manager.data:
+            item = ItemFactory.create_item(data)
+            item.setPos(data.pos_x + 20, data.pos_y + 20)  # Offset pasted items for visibility
+            
+            command = AddItemCommand(item, self.scene)
+            self.scene.command_manager.execute(command)
+            item.setSelected(True)  # Select the newly pasted item
+              
