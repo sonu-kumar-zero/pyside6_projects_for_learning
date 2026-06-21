@@ -3,12 +3,18 @@ from PySide6.QtCore import  QRectF
 
 from items.graphics_item_type import GraphicsItemType
 from items.base_item import BaseItem
+from items.movable_item_mixin import MovableItemMixin
+
 from models.shape import ShapeData
 
-class EllipseItem(QGraphicsEllipseItem, BaseItem):
+class EllipseItem(
+    MovableItemMixin,
+    QGraphicsEllipseItem,
+    BaseItem):
     ITEM_TYPE = GraphicsItemType.ELLIPSE
     def __init__(self, rect: QRectF | None = None):
-        super().__init__(rect or QRectF())
+        QGraphicsEllipseItem.__init__(self, rect or QRectF())
+        MovableItemMixin.__init__(self)
         self.setFlag(QGraphicsEllipseItem.GraphicsItemFlag.ItemIsMovable, True)
         self.setFlag(QGraphicsEllipseItem.GraphicsItemFlag.ItemIsSelectable, True)
         self.setFlag(QGraphicsEllipseItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)

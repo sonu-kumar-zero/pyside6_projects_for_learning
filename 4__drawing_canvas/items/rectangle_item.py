@@ -3,13 +3,21 @@ from PySide6.QtCore import QRectF
 
 from items.graphics_item_type import GraphicsItemType
 from items.base_item import BaseItem
+from items.movable_item_mixin import MovableItemMixin
+
 from models.shape import ShapeData
 
-class RectangleItem(QGraphicsRectItem, BaseItem):
+
+class RectangleItem(
+    MovableItemMixin,
+    QGraphicsRectItem,
+    BaseItem,
+    ):
     ITEM_TYPE = GraphicsItemType.RECTANGLE
     
     def __init__(self, rect:QRectF | None = None):
-        super().__init__(rect or QRectF())
+        MovableItemMixin.__init__(self)
+        QGraphicsRectItem.__init__(self, rect or QRectF())
         self.setFlag(QGraphicsRectItem.GraphicsItemFlag.ItemIsMovable, True)
         self.setFlag(QGraphicsRectItem.GraphicsItemFlag.ItemIsSelectable, True)
         self.setFlag(QGraphicsRectItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)

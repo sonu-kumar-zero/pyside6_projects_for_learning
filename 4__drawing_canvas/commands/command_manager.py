@@ -9,7 +9,6 @@ class CommandManager:
         command.execute()
         
         self.undo_stack.append(command)
-        self.redo_stack.clear()
         
     def undo(self):
         if not self.undo_stack:
@@ -28,3 +27,4 @@ class CommandManager:
         command.execute()
         
         self.undo_stack.append(command)
+        
