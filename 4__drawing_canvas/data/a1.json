@@ -1,0 +1,94 @@
+{
+    "items": [
+        {
+            "type": "ellipse",
+            "x": -373.0,
+            "y": -347.0,
+            "width": 149.0,
+            "height": 189.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "ellipse",
+            "x": -369.0,
+            "y": 88.0,
+            "width": 218.0,
+            "height": 213.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "ellipse",
+            "x": 167.0,
+            "y": 114.0,
+            "width": 171.0,
+            "height": 175.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "ellipse",
+            "x": 97.0,
+            "y": -358.0,
+            "width": 235.0,
+            "height": 165.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "ellipse",
+            "x": -199.0,
+            "y": -239.0,
+            "width": 375.0,
+            "height": 380.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "rectangle",
+            "x": -345.0,
+            "y": -297.0,
+            "width": 268.0,
+            "height": 220.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "rectangle",
+            "x": -167.0,
+            "y": -158.0,
+            "width": 294.0,
+            "height": 243.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "rectangle",
+            "x": 16.0,
+            "y": -308.0,
+            "width": 219.0,
+            "height": 226.0,
+            "pos_x": 185.0,
+            "pos_y": 145.0
+        },
+        {
+            "type": "rectangle",
+            "x": 38.0,
+            "y": -5.0,
+            "width": 206.0,
+            "height": 222.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        },
+        {
+            "type": "rectangle",
+            "x": -318.0,
+            "y": -18.0,
+            "width": 280.0,
+            "height": 248.0,
+            "pos_x": 0.0,
+            "pos_y": 0.0
+        }
+    ]
+}

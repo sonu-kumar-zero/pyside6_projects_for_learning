@@ -3,7 +3,8 @@ from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
     QMainWindow,
     QToolBar,
-    QGraphicsItem
+    QGraphicsItem,
+    QFileDialog,
 )
 
 from canvas.canvas_scene import CanvasScene
@@ -13,6 +14,13 @@ from tools.select_tool import SelectTool
 from tools.rectangle_tool import RectangleTool
 from tools.ellipse_tool import EllipseTool
 
+from commands.delete_item_command import DeleteItemCommand
+from commands.clear_canvas_command import ClearCanvasCommand
+
+from serialization.scene_serializer import SceneSerializer
+from serialization.scene_deserializer import SceneDeserializer
+
+from pathlib import Path
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
@@ -36,10 +44,7 @@ class MainWindow(QMainWindow):
 
         toolbar.setMovable(False)
 
-        self.addToolBar(
-            Qt.ToolBarArea.TopToolBarArea,
-            toolbar,
-        )
+        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, toolbar)
 
         select_action = QAction("Select", self)
         select_action.triggered.connect(lambda: self.scene.set_tool(self.select_tool))
@@ -58,7 +63,7 @@ class MainWindow(QMainWindow):
         delete_action.setShortcut(QKeySequence.StandardKey.Delete)
 
         clear_action = QAction("Clear", self)
-        clear_action.triggered.connect(lambda: self.scene.clear())
+        clear_action.triggered.connect(lambda: self.clear_canvas())
         clear_action.setShortcut(QKeySequence("Ctrl+Shift+C"))
         
         zoom_in_action = QAction("Zoom In", self)
@@ -69,9 +74,25 @@ class MainWindow(QMainWindow):
         zoom_out_action.triggered.connect(lambda: self.view.zoom_out())
         zoom_out_action.setShortcut(QKeySequence.StandardKey.ZoomOut)
         
-        drag_action = QAction("Drag", self)
-        drag_action.triggered.connect(lambda: self.view.toggle_drag())
-        drag_action.setShortcut
+        # drag_action = QAction("Drag", self)
+        # drag_action.triggered.connect(lambda: self.view.toggle_drag())
+        
+        undo_action = QAction("Undo", self)
+        undo_action.triggered.connect(lambda: self.scene.command_manager.undo())
+        undo_action.setShortcut(QKeySequence.StandardKey.Undo)
+        
+        redo_action = QAction("Redo", self)
+        redo_action.triggered.connect(lambda: self.scene.command_manager.redo())
+        redo_action.setShortcut(QKeySequence.StandardKey.Redo)
+
+        save_action = QAction("Save", self)
+        save_action.triggered.connect(lambda: self.save_scene())
+        save_action.setShortcut(QKeySequence.StandardKey.Save)
+
+        open_action = QAction("Open", self)
+        open_action.triggered.connect(lambda: self.open_scene())
+        open_action.setShortcut(QKeySequence.StandardKey.Open)
+
 
         toolbar.addAction(select_action)
         toolbar.addSeparator()
@@ -84,9 +105,46 @@ class MainWindow(QMainWindow):
         toolbar.addAction(zoom_in_action)
         toolbar.addAction(zoom_out_action)
         toolbar.addSeparator()
-        toolbar.addAction(drag_action)
+        # toolbar.addAction(drag_action)
+        # toolbar.addSeparator()
+        toolbar.addAction(undo_action)
+        toolbar.addAction(redo_action)
+        toolbar.addSeparator()
+        toolbar.addAction(save_action)
+        toolbar.addAction(open_action)
+        toolbar.addSeparator()
         
     def delete_selected_items(self) -> None:
         items: list[QGraphicsItem] = self.scene.selectedItems()
-        for item in items:
-            self.scene.removeItem(item)
+        if not items:
+            return
+        
+        command = DeleteItemCommand(self.scene, items)
+        self.scene.command_manager.execute(command)
+    
+    def clear_canvas(self) -> None:
+        command = ClearCanvasCommand(self.scene)
+        self.scene.command_manager.execute(command)
+
+
+    def save_scene(self) -> None:
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save Scene", "", "JSON Files (*.json)")
+        
+        if not file_path:
+            return
+        
+        file_path = Path(file_path)
+        if file_path.suffix != ".json":
+            file_path = file_path.with_suffix(".json")
+        
+        SceneSerializer.save(self.scene, file_path)
+    
+    def open_scene(self) -> None:
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open Scene", "", "JSON Files (*.json)")
+        
+        if not file_path:
+            return
+        
+        file_path = Path(file_path)
+        
+        SceneDeserializer.load(self.scene, file_path)

@@ -1,10 +1,8 @@
 from typing import Protocol
-
 from PySide6.QtWidgets import (
-    QGraphicsScene,
     QGraphicsSceneMouseEvent,
+    QGraphicsScene
 )
-
 
 class Tool(Protocol):
     def mouse_press(

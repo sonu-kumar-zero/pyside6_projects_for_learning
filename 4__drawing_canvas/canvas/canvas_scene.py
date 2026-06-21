@@ -6,6 +6,7 @@ from tools.select_tool import SelectTool
 
 from PySide6.QtGui import QPainter, QPen, QColor
 from PySide6.QtCore import QRect, QRectF
+from commands.command_manager import CommandManager
 
 class CanvasScene(QGraphicsScene):
     MAJOR_GRID_SIZE: int = 125
@@ -21,6 +22,7 @@ class CanvasScene(QGraphicsScene):
             200_000,
             200_000,
         )
+        self.command_manager = CommandManager()
 
     def set_tool(
         self,

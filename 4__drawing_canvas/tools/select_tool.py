@@ -1,8 +1,9 @@
 from PySide6.QtWidgets import QGraphicsScene
 from PySide6.QtWidgets import QGraphicsSceneMouseEvent
+from tools.tool_protocol import Tool
 
 
-class SelectTool:
+class SelectTool(Tool):
     def mouse_press(
         self,
         event: QGraphicsSceneMouseEvent,

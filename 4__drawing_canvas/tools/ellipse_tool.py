@@ -1,12 +1,21 @@
-from typing import Optional
+from typing import Optional, cast
 
 from PySide6.QtCore import QPointF, QRectF
-from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsScene, QGraphicsSceneMouseEvent
+from PySide6.QtWidgets import ( 
+    QGraphicsSceneMouseEvent, 
+    QGraphicsScene,
+    )
 
-class EllipseTool:
+from tools.tool_protocol import Tool
+from commands.add_item_command import AddItemCommand
+from canvas.canvas_scene import CanvasScene
+
+from items.ellipse_item import EllipseItem
+
+class EllipseTool(Tool):
     def __init__(self) -> None:
         self.start_pos: Optional[QPointF] = None
-        self.item: Optional[QGraphicsEllipseItem] = None
+        self.item: Optional[EllipseItem] = None
 
     def mouse_press(
         self,
@@ -15,18 +24,17 @@ class EllipseTool:
     ) -> None:
         self.start_pos: Optional[QPointF] = event.scenePos()
 
-        self.item: Optional[QGraphicsEllipseItem] = QGraphicsEllipseItem()
+        self.item: Optional[EllipseItem] = EllipseItem()
 
         self.item.setFlag(
-            QGraphicsEllipseItem.GraphicsItemFlag.ItemIsMovable,
+            EllipseItem.GraphicsItemFlag.ItemIsMovable,
             True,
         )
 
         self.item.setFlag(
-            QGraphicsEllipseItem.GraphicsItemFlag.ItemIsSelectable,
+            EllipseItem.GraphicsItemFlag.ItemIsSelectable,
             True,
         )
-
         scene.addItem(self.item)
 
     def mouse_move(
@@ -49,4 +57,10 @@ class EllipseTool:
         event: QGraphicsSceneMouseEvent,
         scene: QGraphicsScene,
     ) -> None:
-        self.item: Optional[QGraphicsEllipseItem] = None
+        if self.item is None:
+            return
+        command = AddItemCommand(self.item, scene)
+        canvas_scene: CanvasScene = cast(CanvasScene, scene)
+        canvas_scene.command_manager.undo_stack.append(command)
+    
+        self.item: Optional[EllipseItem] = None

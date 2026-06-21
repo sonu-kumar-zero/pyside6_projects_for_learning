@@ -1,12 +1,19 @@
-from typing import Optional
+from typing import Optional, cast
 
 from PySide6.QtCore import QPointF, QRectF
-from PySide6.QtWidgets import QGraphicsRectItem, QGraphicsSceneMouseEvent, QGraphicsScene
+from PySide6.QtWidgets import (  
+    QGraphicsSceneMouseEvent,
+    QGraphicsScene,
+    )
+from tools.tool_protocol import Tool
+from commands.add_item_command import AddItemCommand
+from protocols.scene_protocol import SceneProtocol
+from items.rectangle_item import RectangleItem
 
-class RectangleTool:
+class RectangleTool(Tool):
     def __init__(self) -> None:
         self.start_pos: Optional[QPointF] = None
-        self.item: Optional[QGraphicsRectItem] = None
+        self.item: Optional[RectangleItem] = None
 
     def mouse_press(
         self,
@@ -15,15 +22,14 @@ class RectangleTool:
     ) -> None:
         self.start_pos: Optional[QPointF] = event.scenePos()
 
-        self.item: Optional[QGraphicsRectItem] = QGraphicsRectItem()
-
+        self.item:Optional[RectangleItem] = RectangleItem()
         self.item.setFlag(
-            QGraphicsRectItem.GraphicsItemFlag.ItemIsMovable,
+            RectangleItem.GraphicsItemFlag.ItemIsMovable,
             True,
         )
 
         self.item.setFlag(
-            QGraphicsRectItem.GraphicsItemFlag.ItemIsSelectable,
+            RectangleItem.GraphicsItemFlag.ItemIsSelectable,
             True,
         )
 
@@ -49,4 +55,11 @@ class RectangleTool:
         event: QGraphicsSceneMouseEvent,
         scene: QGraphicsScene,
     ) -> None:
-        self.item: Optional[QGraphicsRectItem] = None
+        if not self.item:
+            return
+        
+        command = AddItemCommand(self.item, scene)
+        canvas_scene: SceneProtocol = cast(SceneProtocol, scene)
+        canvas_scene.command_manager.undo_stack.append(command)
+
+        self.item: Optional[RectangleItem] = None
