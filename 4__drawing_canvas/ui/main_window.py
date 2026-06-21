@@ -1,8 +1,9 @@
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
     QMainWindow,
     QToolBar,
+    QGraphicsItem
 )
 
 from canvas.canvas_scene import CanvasScene
@@ -30,10 +31,6 @@ class MainWindow(QMainWindow):
 
         self._create_toolbar()
 
-        self.scene.set_tool(
-            self.select_tool
-        )
-
     def _create_toolbar(self) -> None:
         toolbar = QToolBar("Tools")
 
@@ -44,39 +41,52 @@ class MainWindow(QMainWindow):
             toolbar,
         )
 
-        select_action = QAction(
-            "Select",
-            self,
-        )
+        select_action = QAction("Select", self)
+        select_action.triggered.connect(lambda: self.scene.set_tool(self.select_tool))
+        select_action.setShortcut(QKeySequence("S"))
 
-        rectangle_action = QAction(
-            "Rectangle",
-            self,
-        )
+        rectangle_action = QAction("Rectangle", self)
+        rectangle_action.triggered.connect(lambda: self.scene.set_tool(self.rectangle_tool))
+        rectangle_action.setShortcut(QKeySequence("Shift+R"))
+        
+        ellipse_action = QAction("Ellipse", self)
+        ellipse_action.triggered.connect(lambda: self.scene.set_tool(self.ellipse_tool))
+        ellipse_action.setShortcut(QKeySequence("Shift+E"))
 
-        ellipse_action = QAction(
-            "Ellipse",
-            self,
-        )
+        delete_action = QAction("Delete", self)
+        delete_action.triggered.connect(lambda: self.delete_selected_items())
+        delete_action.setShortcut(QKeySequence.StandardKey.Delete)
 
-        select_action.triggered.connect(
-            lambda: self.scene.set_tool(
-                self.select_tool
-            )
-        )
-
-        rectangle_action.triggered.connect(
-            lambda: self.scene.set_tool(
-                self.rectangle_tool
-            )
-        )
-
-        ellipse_action.triggered.connect(
-            lambda: self.scene.set_tool(
-                self.ellipse_tool
-            )
-        )
+        clear_action = QAction("Clear", self)
+        clear_action.triggered.connect(lambda: self.scene.clear())
+        clear_action.setShortcut(QKeySequence("Ctrl+Shift+C"))
+        
+        zoom_in_action = QAction("Zoom In", self)
+        zoom_in_action.triggered.connect(lambda: self.view.zoom_in())
+        zoom_in_action.setShortcut(QKeySequence.StandardKey.ZoomIn)
+        
+        zoom_out_action = QAction("Zoom Out", self)
+        zoom_out_action.triggered.connect(lambda: self.view.zoom_out())
+        zoom_out_action.setShortcut(QKeySequence.StandardKey.ZoomOut)
+        
+        drag_action = QAction("Drag", self)
+        drag_action.triggered.connect(lambda: self.view.toggle_drag())
+        drag_action.setShortcut
 
         toolbar.addAction(select_action)
+        toolbar.addSeparator()
         toolbar.addAction(rectangle_action)
         toolbar.addAction(ellipse_action)
+        toolbar.addSeparator()
+        toolbar.addAction(delete_action)
+        toolbar.addAction(clear_action)
+        toolbar.addSeparator()
+        toolbar.addAction(zoom_in_action)
+        toolbar.addAction(zoom_out_action)
+        toolbar.addSeparator()
+        toolbar.addAction(drag_action)
+        
+    def delete_selected_items(self) -> None:
+        items: list[QGraphicsItem] = self.scene.selectedItems()
+        for item in items:
+            self.scene.removeItem(item)
